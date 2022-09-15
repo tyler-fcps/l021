@@ -6,13 +6,15 @@
 
 using namespace std;
 
-class Point {
-    public:
-        double x, y;
+class Point
+{
+public:
+    double x, y;
 
-    Point(double x, double y): x(x), y(y) {}
+    Point(double x, double y) : x(x), y(y) {}
 
-    Point() {
+    Point()
+    {
         // Generate random numbers
         random_device os_seed;
         mt19937 generator(os_seed());
@@ -23,44 +25,37 @@ class Point {
     }
 };
 
-double sign(Point * p1, Point * p2, Point * p3) {
-    return (p1 -> x - p3 -> x) * (p2 -> y - p3 -> y) - (p2 -> x - p3 -> x) * (p1 -> y - p3 -> y);
+bool check_convex(Point &p1, Point &p2, Point &p3, Point &p4)
+{
+    return false;
 }
 
-bool PointInTriangle(Point * pt, Point * v1, Point * v2, Point * v3) {
-    float d1, d2, d3;
-    bool has_neg, has_pos;
+int main()
+{
+    auto ps = new Point[4];
 
-    d1 = sign(pt, v1, v2);
-    d2 = sign(pt, v2, v3);
-    d3 = sign(pt, v3, v1);
-
-    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
-    return !(has_neg && has_pos);
-}
-
-int main() {
-    Point * p1, * p2, * p3;
-    p1 = new Point();
-    p2 = new Point();
-    p3 = new Point();
-
-    Point * p4 = new Point();
-    while (PointInTriangle(p4, p1, p2, p3)) {
-        p4 = new Point();
+    for (int i = 0; i < 4; i++)
+    {
+        ps[i] = Point();
     }
-    
+
+    for (int i = 0; i < 4; i++)
+    {
+        if (!check_convex(ps[(i + 0) % 4], ps[(i + 1) % 4], ps[(i + 2) % 4], ps[(i + 3) % 4]))
+        {
+            ps[i] = Point();
+        }
+    }
+
     // Create and open a text file
     ofstream out("points.txt");
 
     // Write data
-    out << setprecision(17) << "(" 
-        << p1->x << "," << p1->y << ") , ("
-        << p2->x << "," << p2->y << ") , ("
-        << p3->x << "," << p3->y << ") , ("
-        << p4->x << "," << p4->y << ")" << endl;
+    // out << setprecision(17) << "("
+    //     << p1->x << "," << p1->y << ") , ("
+    //     << p2->x << "," << p2->y << ") , ("
+    //     << p3->x << "," << p3->y << ") , ("
+    //     << p4->x << "," << p4->y << ")" << endl;
 
     // Close the file
     out.close();
