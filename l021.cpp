@@ -6,56 +6,87 @@
 
 using namespace std;
 
-class Point
+class Vector
 {
 public:
     double x, y;
 
-    Point(double x, double y) : x(x), y(y) {}
+    Vector() {}
 
-    Point()
+    Vector(double x, double y) : x(x), y(y) {}
+
+    double len()
     {
-        // Generate random numbers
-        random_device os_seed;
-        mt19937 generator(os_seed());
-        uniform_real_distribution<> distribute_xy(0, 1);
+        return sqrt(this->x * this->x + this->y * this->y);
+    }
 
-        x = distribute_xy(generator);
-        y = distribute_xy(generator);
+    Vector norm()
+    {
+        return *this / this->len();
+    }
+
+    double dot(Vector const &obj)
+    {
+        return this->x * obj.x + this->y * obj.y;
+    }
+
+    Vector operator+(Vector const &obj)
+    {
+        return Vector(this->x + obj.x, this->y + obj.y);
+    }
+
+    Vector operator-(Vector const &obj)
+    {
+        return Vector(this->x - obj.x, this->y - obj.y);
+    }
+
+    Vector operator/(double div)
+    {
+        return Vector(this->x / div, this->y / div);
     }
 };
 
-bool check_convex(Point &p1, Point &p2, Point &p3, Point &p4)
+bool check_convex(Vector &p1, Vector &p2, Vector &p3, Vector &p4)
 {
-    return false;
+    Vector a, b, c;
+    a = p3 - p1;
+    b = (p2 - p1).norm();
+    c = (p4 - p1).norm();
+
+    return a.dot(b + c) >= 0;
 }
 
 int main()
 {
-    auto ps = new Point[4];
+    auto p = new Vector[4];
+
+    // Generate random numbers
+    random_device os_seed;
+    mt19937 gen(os_seed());
+    uniform_real_distribution<> xy(0, 1);
 
     for (int i = 0; i < 4; i++)
     {
-        ps[i] = Point();
+        p[i] = Vector(xy(gen), xy(gen));
     }
 
-    for (int i = 0; i < 4; i++)
+    int i = 0;
+    while (!check_convex(p[0], p[1], p[2], p[3]))
     {
-        if (!check_convex(ps[(i + 0) % 4], ps[(i + 1) % 4], ps[(i + 2) % 4], ps[(i + 3) % 4]))
-        {
-            ps[i] = Point();
-        }
+        p[4] = Vector(xy(gen), xy(gen));
+        cout << "Failed " << i << endl;
+        i++;
     }
 
     // Create and open a text file
     ofstream out("points.txt");
 
     // Write data
-    // out << setprecision(17) << "("
-    //     << p1->x << "," << p1->y << ") , ("
-    //     << p2->x << "," << p2->y << ") , ("
-    //     << p3->x << "," << p3->y << ") , ("
-    //     << p4->x << "," << p4->y << ")" << endl;
+    out << setprecision(17) << "("
+        << p[0].x << "," << p[0].y << ") , ("
+        << p[1].x << "," << p[1].y << ") , ("
+        << p[2].x << "," << p[2].y << ") , ("
+        << p[3].x << "," << p[3].y << ")" << endl;
 
     // Close the file
     out.close();
