@@ -76,7 +76,7 @@ void part1()
     mt19937 gen(os_seed());
     uniform_real_distribution<> xy(0, 1);
     // Printing lambda
-    auto print_vec = [&](auto vec)
+    auto print_vec = [&](Vector &vec)
     { log << "(" << vec.x << ", " << vec.y << ")"; };
 
     log << "Inital Points: ";
