@@ -46,36 +46,62 @@ public:
     }
 };
 
-bool check_convex(Vector &p1, Vector &p2, Vector &p3, Vector &p4)
+bool in_triangle(Vector &p0, Vector &p1, Vector &p2, Vector &p3)
 {
-    Vector a, b, c;
-    a = p3 - p1;
-    b = (p2 - p1).norm();
-    c = (p4 - p1).norm();
+    auto sign = [](Vector &p1, Vector &p2, Vector &p3)
+    {
+        return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+    };
 
-    return a.dot(b + c) >= 0;
+    double l1, l2, l3;
+    l1 = sign(p0, p1, p2);
+    l2 = sign(p0, p2, p3);
+    l3 = sign(p0, p3, p1);
+
+    bool neg, pos;
+    neg = (l1 < 0) || (l2 < 0) || (l3 < 0);
+    pos = (l1 > 0) || (l2 > 0) || (l3 > 0);
+
+    return !neg || !pos;
 }
 
-int main()
+void part1()
 {
+    // Open log
+    ofstream log("log.txt");
+    // Make vecs
     auto p = new Vector[4];
-
     // Generate random numbers
     random_device os_seed;
     mt19937 gen(os_seed());
     uniform_real_distribution<> xy(0, 1);
+    // Printing lambda
+    auto print_vec = [&](auto vec)
+    { log << "(" << vec.x << ", " << vec.y << ")"; };
 
+    log << "Inital Points: ";
     for (int i = 0; i < 4; i++)
     {
         p[i] = Vector(xy(gen), xy(gen));
+        log << "p" << i << " = ";
+        print_vec(p[i]);
+        log << ", ";
     }
+    log << endl;
 
-    int i = 0;
-    while (!check_convex(p[0], p[1], p[2], p[3]))
+    int count = 0;
+    for (int i = 0; i < 4; i++)
     {
-        p[4] = Vector(xy(gen), xy(gen));
-        cout << "Failed " << i << endl;
-        i++;
+        while (in_triangle(p[(i + 0) % 4], p[(i + 1) % 4], p[(i + 2) % 4], p[(i + 3) % 4]))
+        {
+            log << "Failed (" << count << "), point p" << i << " is inside the rest" << endl;
+            p[3] = Vector(xy(gen), xy(gen));
+            log << "New p3 is ";
+            print_vec(p[3]);
+            log << endl;
+            count++;
+            i = 0;
+        }
     }
 
     // Create and open a text file
@@ -90,4 +116,10 @@ int main()
 
     // Close the file
     out.close();
+    log.close();
+}
+
+int main()
+{
+    part1();
 }
