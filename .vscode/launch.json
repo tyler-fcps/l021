@@ -9,7 +9,7 @@
             "request": "launch",
             "preLaunchTask": "C/C++: clang++.exe build active file",
             "name": "Debug",
-            "program": "${workspaceFolder}/l01.exe",
+            "program": "${workspaceFolder}/l021.exe",
             "args": [],
             "cwd": "${workspaceFolder}"
         }

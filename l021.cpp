@@ -114,6 +114,14 @@ void part1()
         << p[2].x << "," << p[2].y << ") , ("
         << p[3].x << "," << p[3].y << ")" << endl;
 
+    // Write for desmos
+    log << "Final Points:" << endl;
+    for (int i = 0; i < 4; i++)
+    {
+        print_vec(p[i]);
+        log << endl;
+    }
+
     // Close the file
     out.close();
     log.close();
